@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using BHS;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,7 +19,7 @@ namespace NMJ
         private const int LegCount = 4;
 
         [Header("연결 (비워 두면 씬에서 BHS.BossHealth 를 자동으로 찾음)")]
-        [SerializeField] private BossHealth boss;
+        [SerializeField] private Component boss;
 
         [Header("표시")]
         [SerializeField] private string bossName = "玄武 현무";
@@ -42,7 +41,7 @@ namespace NMJ
         private static readonly Color Fill = new Color(0.62f, 0.14f, 0.10f, 1f);
 
         private CanvasGroup group;
-        private readonly List<BossWallHealth> walls = new List<BossWallHealth>();
+        private readonly List<Component> walls = new List<Component>();
         private readonly Image[] fills = new Image[LegCount];
         private readonly RectTransform[] shackles = new RectTransform[LegCount];
         private readonly Image[] locks = new Image[LegCount];
@@ -70,11 +69,11 @@ namespace NMJ
 
         private void Start()
         {
-            if (boss == null) boss = FindFirstObjectByType<BossHealth>(FindObjectsInactive.Include);
+            if (boss == null) boss = BhsBossLink.FindBoss();
 
             if (boss != null)
             {
-                walls.AddRange(boss.GetComponentsInChildren<BossWallHealth>(true));
+                walls.AddRange(BhsBossLink.FindWalls(boss));
                 walls.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
                 if (walls.Count > LegCount) walls.RemoveRange(LegCount, walls.Count - LegCount);
             }
@@ -112,9 +111,7 @@ namespace NMJ
             if (simulated) return simHp[i];
             if (i >= walls.Count || walls[i] == null) return 0f;
 
-            var wall = walls[i];
-            if (!wall.gameObject.activeSelf || wall.currentHp <= 0f) return 0f;
-            return Mathf.Clamp01(wall.currentHp / Mathf.Max(1f, wall.maxHp));
+            return BhsBossLink.WallRatio(walls[i]);
         }
 
         private void HandleTestKeys()
@@ -142,7 +139,7 @@ namespace NMJ
             foreach (var wall in walls)
             {
                 if (wall == null || !wall.gameObject.activeSelf) continue;
-                wall.TakeDamage(wall.maxHp, transform.position);
+                BhsBossLink.BreakWall(wall, transform.position);
                 return;
             }
         }

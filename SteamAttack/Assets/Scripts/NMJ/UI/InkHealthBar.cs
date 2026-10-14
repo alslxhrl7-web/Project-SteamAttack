@@ -13,7 +13,7 @@ namespace NMJ
     {
         [Header("연결 (선택)")]
         [Tooltip("지정하면 이 보스의 CurrentHp / maxHp 를 매 프레임 반영한다.")]
-        [SerializeField] private BHS.BossHealth boss;
+        [SerializeField] private Component boss;
 
         [Header("표시")]
         [SerializeField] private string label = "玄武 현무";
@@ -54,8 +54,8 @@ namespace NMJ
 
         private void Update()
         {
-            if (boss != null)
-                SetValues(boss.CurrentHp, boss.maxHp);
+            if (boss != null && BhsBossLink.TryReadBoss(boss, out float cur, out float max))
+                SetValues(cur, max);
 
             if (trailTimer > 0f)
             {
