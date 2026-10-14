@@ -22,7 +22,7 @@ namespace NMJ
         public static Component FindBoss()
         {
             if (BossType == null) return null;
-            return UnityEngine.Object.FindFirstObjectByType(BossType, FindObjectsInactive.Include) as Component;
+            return UnityEngine.Object.FindAnyObjectByType(BossType, FindObjectsInactive.Include) as Component;
         }
 
         public static Component[] FindWalls(Component boss)
