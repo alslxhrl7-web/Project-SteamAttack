@@ -81,7 +81,7 @@ namespace NMJ
             simulated = walls.Count == 0;
             if (simulated)
             {
-                Debug.LogWarning("[HyeonmuBossBar] BHS 보스(다리)를 못 찾아 단독 테스트 모드로 동작한다.");
+                Debug.Log("[HyeonmuBossBar] BHS 보스(다리)를 못 찾아 단독 테스트 모드로 동작한다.");
                 ResetSimulation();
             }
         }
