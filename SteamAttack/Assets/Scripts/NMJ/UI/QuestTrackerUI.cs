@@ -1,9 +1,8 @@
 using System.Text;
-using SteamAttack.Quests;
 using TMPro;
 using UnityEngine;
 
-namespace SteamAttack.UI
+namespace NMJ
 {
     /// <summary>
     /// HUD 한쪽에 추적 중인 퀘스트(기본값: 진행 중인 메인 퀘스트)의
@@ -55,7 +54,7 @@ namespace SteamAttack.UI
         public void Redraw()
         {
             var tracked = manager != null ? (manager.TrackedQuest ?? manager.GetActiveMainQuest()) : null;
-            bool show = tracked != null && tracked.Status != QuestStatus.Completed;
+            bool show = tracked != null && tracked.Data != null && tracked.Status != QuestStatus.Completed;
 
             if (root != null) root.SetActive(show);
             if (!show) return;
