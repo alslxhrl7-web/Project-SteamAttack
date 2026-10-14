@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - PlayerAttack
   - EnemyAttack
+  - PlayerLongAttack
   layers:
   - Default
   - TransparentFX
@@ -54,4 +55,5 @@ TagManager:
   - Light Layer 5
   - Light Layer 6
   - Light Layer 7
+  - Ground
   m_MigratedRenderPipelines: []
