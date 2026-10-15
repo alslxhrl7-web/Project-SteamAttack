@@ -40,10 +40,10 @@ namespace NMJ
         [SerializeField] private float transitionTime = 1.0f;
         public UnityEvent onStart;
 
-        private static readonly Color Ink = new Color(0.055f, 0.055f, 0.065f, 1f);
-        private static readonly Color InkSoft = new Color(0.055f, 0.055f, 0.065f, 0.62f);
-        private static readonly Color Paper = new Color(0.95f, 0.93f, 0.88f, 1f);
-        private static readonly Color Cinnabar = new Color(0.68f, 0.16f, 0.11f, 1f);
+        private static readonly Color Ink = NMJ_UiStyle.Ink;
+        private static readonly Color InkSoft = NMJ_UiStyle.WithAlpha(NMJ_UiStyle.Ink, 0.62f);
+        private static readonly Color Paper = NMJ_UiStyle.Paper;
+        private static readonly Color Cinnabar = NMJ_UiStyle.Cinnabar;
 
         private Canvas canvas;
         private RectTransform background;
@@ -70,8 +70,7 @@ namespace NMJ
 #if UNITY_EDITOR
         private void Reset()
         {
-            font = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
-                "Assets/Fonts/NGH/ChosunCentennial_otf SDF.asset");
+            font = NMJ_UiStyle.LoadDefaultFont();
         }
 #endif
 
@@ -227,20 +226,9 @@ namespace NMJ
 
         private void BuildUi()
         {
-            var canvasGo = new GameObject("TitleCanvas", typeof(RectTransform));
-            canvasGo.transform.SetParent(transform, false);
-
-            canvas = canvasGo.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 100;
-
-            var scaler = canvasGo.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920f, 1080f);
-            // 세로 배치(제목 ↔ 메뉴)가 겹치지 않도록 항상 높이 기준으로 맞춘다. 넓은 화면은 가로 여백이 늘 뿐이다.
-            scaler.matchWidthOrHeight = 1f;
-            canvasGo.AddComponent<GraphicRaycaster>();
-            var root = canvasGo.transform;
+            var canvasGroup = NMJ_UiStyle.CreateCanvas("TitleCanvas", transform, NMJ_UiStyle.OrderTitle, raycast: true);
+            canvas = canvasGroup.GetComponent<Canvas>();
+            var root = canvasGroup.transform;
 
             // 배경 + 움직이는 안개와 눈
             var bgTex = bakedBackground != null ? bakedBackground : NMJ_InkPainter.TitleBackground();

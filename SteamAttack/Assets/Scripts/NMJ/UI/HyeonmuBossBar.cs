@@ -34,11 +34,11 @@ namespace NMJ
         [Header("이벤트")]
         public UnityEvent OnAllLegsBroken;
 
-        private static readonly Color Paper = new Color(0.86f, 0.80f, 0.66f, 0.92f);
-        private static readonly Color Ink = new Color(0.10f, 0.08f, 0.07f, 0.95f);
-        private static readonly Color Brass = new Color(0.78f, 0.60f, 0.24f, 1f);
+        private static readonly Color Paper = NMJ_UiStyle.WithAlpha(NMJ_UiStyle.PaperAged, 0.92f);
+        private static readonly Color Ink = NMJ_UiStyle.WithAlpha(NMJ_UiStyle.Ink, 0.95f);
+        private static readonly Color Brass = NMJ_UiStyle.Brass;
         private static readonly Color BrassDim = new Color(0.36f, 0.30f, 0.20f, 1f);
-        private static readonly Color Fill = new Color(0.62f, 0.14f, 0.10f, 1f);
+        private static readonly Color Fill = NMJ_UiStyle.Cinnabar;
 
         private CanvasGroup group;
         private readonly List<Component> walls = new List<Component>();
@@ -57,8 +57,7 @@ namespace NMJ
 #if UNITY_EDITOR
         private void Reset()
         {
-            font = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
-                "Assets/Fonts/NGH/ChosunCentennial_otf SDF.asset");
+            font = NMJ_UiStyle.LoadDefaultFont();
         }
 #endif
 
@@ -199,21 +198,8 @@ namespace NMJ
 
         private void BuildUi()
         {
-            var canvasGo = new GameObject("HyeonmuBossBarCanvas", typeof(RectTransform));
-            canvasGo.transform.SetParent(transform, false);
-
-            var canvas = canvasGo.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 50;
-
-            var scaler = canvasGo.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920f, 1080f);
-            scaler.matchWidthOrHeight = 0.5f;
-
-            group = canvasGo.AddComponent<CanvasGroup>();
-            group.interactable = false;
-            group.blocksRaycasts = false;
+            group = NMJ_UiStyle.CreateCanvas("HyeonmuBossBarCanvas", transform, NMJ_UiStyle.OrderBossBar);
+            var canvasGo = group.gameObject;
 
             // 바깥 틀 (한지 + 먹 테두리)
             var frame = MakeImage("Frame", canvasGo.transform, Ink);

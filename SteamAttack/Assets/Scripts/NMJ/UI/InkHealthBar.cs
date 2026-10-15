@@ -25,10 +25,10 @@ namespace NMJ
         [SerializeField] private float trailDelay = 0.45f;
         [SerializeField] private float trailSpeed = 0.6f;
 
-        private static readonly Color Ink = new Color(0.08f, 0.07f, 0.07f, 0.95f);
-        private static readonly Color Paper = new Color(0.86f, 0.80f, 0.66f, 0.92f);
-        private static readonly Color Seal = new Color(0.62f, 0.14f, 0.10f, 1f);
-        private static readonly Color Trail = new Color(0.97f, 0.95f, 0.90f, 0.95f);
+        private static readonly Color Ink = NMJ_UiStyle.WithAlpha(NMJ_UiStyle.Ink, 0.95f);
+        private static readonly Color Paper = NMJ_UiStyle.WithAlpha(NMJ_UiStyle.PaperAged, 0.92f);
+        private static readonly Color Seal = NMJ_UiStyle.Cinnabar;
+        private static readonly Color Trail = NMJ_UiStyle.WithAlpha(NMJ_UiStyle.Steam, 0.95f);
 
         private Image fill;
         private Image trail;
@@ -42,8 +42,7 @@ namespace NMJ
 #if UNITY_EDITOR
         private void Reset()
         {
-            font = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
-                "Assets/Fonts/NGH/ChosunCentennial_otf SDF.asset");
+            font = NMJ_UiStyle.LoadDefaultFont();
         }
 #endif
 
@@ -93,21 +92,8 @@ namespace NMJ
 
         private void BuildUi()
         {
-            var canvasGo = new GameObject("InkHealthBarCanvas", typeof(RectTransform));
-            canvasGo.transform.SetParent(transform, false);
-
-            var canvas = canvasGo.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 51;
-
-            var scaler = canvasGo.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920f, 1080f);
-            scaler.matchWidthOrHeight = 0.5f;
-
-            group = canvasGo.AddComponent<CanvasGroup>();
-            group.interactable = false;
-            group.blocksRaycasts = false;
+            group = NMJ_UiStyle.CreateCanvas("InkHealthBarCanvas", transform, NMJ_UiStyle.OrderInkHealthBar);
+            var canvasGo = group.gameObject;
 
             // 먹 테두리 → 한지 바탕 → 흰 잔상 → 먹물 체력
             var frame = MakeImage("Frame", canvasGo.transform, Ink);
